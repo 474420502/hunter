@@ -36,6 +36,7 @@ func NewPriorityHunter(queueCreator func() *pqueue.PriorityQueue) *Hunter {
 
 	hunter.cxt = NewContext()
 	hunter.cxt.curNode = hunter.task
+	hunter.cxt.share = make(map[string]interface{})
 	return hunter
 }
 

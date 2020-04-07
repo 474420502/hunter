@@ -52,12 +52,13 @@ func CreatePriorityMinQueue() *pqueue.PriorityQueue {
 // priorityMax 最大值优先
 func priorityMax(k1, k2 interface{}) int {
 	p1, p2 := 0.0, 0.0
+	n1, n2 := k1.(ITaskNode), k2.(ITaskNode)
 
-	if priority, ok := k1.(IPriority); ok {
+	if priority, ok := n1.Task().(IPriority); ok {
 		p1 = priority.Priority()
 	}
 
-	if priority, ok := k2.(IPriority); ok {
+	if priority, ok := n2.Task().(IPriority); ok {
 		p2 = priority.Priority()
 	}
 
@@ -70,12 +71,13 @@ func priorityMax(k1, k2 interface{}) int {
 // priorityMin 最小值优先
 func priorityMin(k1, k2 interface{}) int {
 	p1, p2 := 0.0, 0.0
+	n1, n2 := k1.(ITaskNode), k2.(ITaskNode)
 
-	if priority, ok := k1.(IPriority); ok {
+	if priority, ok := n1.Task().(IPriority); ok {
 		p1 = priority.Priority()
 	}
 
-	if priority, ok := k2.(IPriority); ok {
+	if priority, ok := n2.Task().(IPriority); ok {
 		p2 = priority.Priority()
 	}
 
