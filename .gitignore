@@ -1,0 +1,7 @@
+hunter
+.vscode
+*.log
+*.png
+*.tar
+*.gz
+*.7z
