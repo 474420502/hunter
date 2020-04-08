@@ -6,7 +6,7 @@ import (
 
 // IBefore 执行任务前处理
 type IBefore interface {
-	Before()
+	Before(cxt *TaskContext)
 }
 
 // // IExecute 执行任务
@@ -16,7 +16,7 @@ type IBefore interface {
 
 // IAfter 执行任务后
 type IAfter interface {
-	After()
+	After(cxt *TaskContext)
 }
 
 // ITask 任务接口

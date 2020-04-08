@@ -56,13 +56,25 @@ func (hunter *Hunter) Execute() {
 }
 
 func (hunter *Hunter) recursionTasks(itask ITaskNode) {
+
 	for children := itask.Children(); children != nil && children.Size() > 0; {
 		if itask, ok := children.Pop(); ok {
 			tasknode := itask.(ITaskNode)
+
+			task := tasknode.Task()
+			if before, ok := task.(IBefore); ok {
+				before.Before(hunter.cxt)
+			}
+
 			tasknode.Task().Execute(hunter.cxt)
+
+			if after, ok := task.(IAfter); ok {
+				after.After(hunter.cxt)
+			}
 			hunter.recursionTasks(tasknode)
 		}
 	}
+
 }
 
 // Stop 停止任务
