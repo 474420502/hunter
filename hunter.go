@@ -1,23 +1,29 @@
 package hunter
 
 import (
+	"strconv"
+
 	pqueue "github.com/474420502/focus/priority_queue"
+	"github.com/474420502/requests"
 )
 
 // IGobalBefore 全局任务执行之前
 type IGobalBefore interface {
-	GobalBefore()
+	GobalBefore(cxt *TaskContext)
 }
 
 // IGobalAfter 全局任务执行之后
 type IGobalAfter interface {
-	GobalAfter()
+	GobalAfter(cxt *TaskContext)
 }
 
 // Hunter 任务相关 必须有序
 type Hunter struct {
-	cxt         *TaskContext
-	task        ITaskNode
+	share map[string]interface{}
+
+	session *requests.Session
+
+	tasks       []ITask
 	createQueue func() *pqueue.PriorityQueue
 }
 
@@ -30,13 +36,15 @@ func NewHunter() *Hunter {
 func NewPriorityHunter(queueCreator func() *pqueue.PriorityQueue) *Hunter {
 	hunter := &Hunter{}
 	hunter.createQueue = queueCreator
-	hunter.task = &BaseTask{}
-	hunter.task.SetParent(nil)
-	hunter.task.SetChildren(hunter.createQueue())
 
-	hunter.cxt = NewContext()
-	hunter.cxt.curNode = hunter.task
-	hunter.cxt.share = make(map[string]interface{})
+	// hunter.task = &BaseTask{}
+	// hunter.task.SetParent(nil)
+	// hunter.task.SetChildren(hunter.createQueue())
+
+	// hunter.cxt = NewContext()
+	// hunter.cxt.curNode = hunter.task
+
+	hunter.share = make(map[string]interface{})
 	return hunter
 }
 
@@ -50,28 +58,86 @@ func NewPriorityMinHunter() *Hunter {
 	return NewPriorityHunter(CreatePriorityMinQueue)
 }
 
-// Execute 执行任务
-func (hunter *Hunter) Execute() {
-	hunter.recursionTasks(hunter.task)
+// Session Get session *requests.Session
+func (hunter *Hunter) Session() *requests.Session {
+	return hunter.session
 }
 
-func (hunter *Hunter) recursionTasks(itask ITaskNode) {
+// SetSession Set session *requests.Session
+func (hunter *Hunter) SetSession(session *requests.Session) {
+	hunter.session = session
+}
 
-	for children := itask.Children(); children != nil && children.Size() > 0; {
+// GetShare 获取share的数据, 存储用的
+func (hunter *Hunter) GetShare(key string) interface{} {
+	if v, ok := hunter.share[key]; ok {
+		return v
+	}
+	return nil
+}
+
+// SetShare 设置share的数据, 存储用的
+func (hunter *Hunter) SetShare(key string, value interface{}) {
+	hunter.share[key] = value
+}
+
+// Execute 执行任务
+func (hunter *Hunter) Execute() {
+	for _, task := range hunter.tasks {
+		hunter.execute(task)
+	}
+}
+
+// Execute 执行任务
+func (hunter *Hunter) execute(task ITask) {
+	cxt := NewContext()
+
+	btask := &BaseTask{}
+	// btask.SetTask(task)
+	btask.SetParent(nil)
+	btask.SetChildren(hunter.createQueue())
+
+	cxt.parent = btask
+	cxt.hunter = hunter
+	cxt.AddTask(task)
+
+	hunter.recursionTasks(cxt)
+}
+
+func (hunter *Hunter) recursionTasks(cxt *TaskContext) {
+
+	autoid := 0
+
+	for children := cxt.parent.Children(); children != nil && children.Size() > 0; {
 		if itask, ok := children.Pop(); ok {
-			tasknode := itask.(ITaskNode)
 
+			ncxt := NewContext()
+
+			tasknode := itask.(ITaskNode)
 			task := tasknode.Task()
-			if before, ok := task.(IBefore); ok {
-				before.Before(hunter.cxt)
+
+			ncxt.curPath = cxt.parent.Path()
+			if itid, ok := task.(IIdentity); ok {
+				ncxt.curTaskID = itid.GetID()
+			} else {
+				ncxt.curTaskID = strconv.Itoa(autoid)
+				autoid++
 			}
 
-			tasknode.Task().Execute(hunter.cxt)
+			if before, ok := task.(IBefore); ok {
+				before.Before(cxt)
+			}
+
+			tasknode.Task().Execute(cxt)
 
 			if after, ok := task.(IAfter); ok {
-				after.After(hunter.cxt)
+				after.After(cxt)
 			}
-			hunter.recursionTasks(tasknode)
+
+			tasknode.SetPath(cxt.parent.Path() + "." + ncxt.curTaskID)
+			ncxt.parent = cxt.current
+			ncxt.current = tasknode
+			hunter.recursionTasks(ncxt)
 		}
 	}
 
@@ -84,7 +150,7 @@ func (hunter *Hunter) Stop() {
 
 // AddTask 执行任务
 func (hunter *Hunter) AddTask(task ITask) {
-	hunter.cxt.AddTask(task)
+	hunter.tasks = append(hunter.tasks, task)
 }
 
 // Execute 执行

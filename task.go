@@ -24,6 +24,11 @@ type ITask interface {
 	Execute(ctx *TaskContext)
 }
 
+// IIdentity 身份id接口
+type IIdentity interface {
+	GetID() string
+}
+
 // ITaskNode 任务节点
 type ITaskNode interface {
 	Parent() ITaskNode
@@ -34,12 +39,16 @@ type ITaskNode interface {
 
 	Task() ITask // ITaskNode
 	SetTask(itask ITask)
+
+	SetPath(path string)
+	Path() string
 }
 
 // BaseTask 任务,必须包含子任务. 执行了第一个
 type BaseTask struct {
 	parent   ITaskNode
 	children *pqueue.PriorityQueue // ITask类型
+	path     string                // id 联合体, 禁用.命名
 	task     ITask
 }
 
@@ -71,6 +80,16 @@ func (task *BaseTask) Task() ITask {
 // SetTask 孩子节点
 func (task *BaseTask) SetTask(itask ITask) {
 	task.task = itask
+}
+
+// Path 路径 例如: web.subweb.subsubweb
+func (task *BaseTask) Path() string {
+	return task.path
+}
+
+// SetPath 路径 例如: web.subweb.subsubweb
+func (task *BaseTask) SetPath(path string) {
+	task.path = path
 }
 
 // // Task 孩子节点

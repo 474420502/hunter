@@ -23,7 +23,7 @@ func TestCasePreUrl(t *testing.T) {
 	hunter.Execute()
 
 	data := make(map[string]interface{})
-	content := hunter.cxt.GetShare("test").(string)
+	content := hunter.GetShare("test").(string)
 	err := json.Unmarshal([]byte(content), &data)
 	if err != nil {
 		t.Error(err)
@@ -55,7 +55,7 @@ func TestCasePostForm(t *testing.T) {
 	hunter.Execute()
 
 	data := make(map[string]interface{})
-	content := hunter.cxt.GetShare("test").(string)
+	content := hunter.GetShare("test").(string)
 	err := json.Unmarshal([]byte(content), &data)
 	if err != nil {
 		t.Error(err)
@@ -88,7 +88,7 @@ func TestCaseWebSub(t *testing.T) {
 	hunter.Execute()
 
 	data := make(map[string]interface{})
-	content := hunter.cxt.GetShare("test").(string)
+	content := hunter.GetShare("test").(string)
 	err := json.Unmarshal([]byte(content), &data)
 	if err != nil {
 		t.Error(err)
