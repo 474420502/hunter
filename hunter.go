@@ -97,7 +97,7 @@ func (hunter *Hunter) execute(task ITask) {
 	btask.SetParent(nil)
 	btask.SetChildren(hunter.createQueue())
 
-	cxt.parent = btask
+	cxt.current = btask
 	cxt.hunter = hunter
 	cxt.AddTask(task)
 
@@ -108,7 +108,7 @@ func (hunter *Hunter) recursionTasks(cxt *TaskContext) {
 
 	autoid := 0
 
-	for children := cxt.parent.Children(); children != nil && children.Size() > 0; {
+	for children := cxt.current.Children(); children != nil && children.Size() > 0; {
 		if itask, ok := children.Pop(); ok {
 
 			ncxt := NewContext()
