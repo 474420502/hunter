@@ -2,8 +2,13 @@ package hunter
 
 import (
 	"encoding/json"
+	"log"
 	"testing"
 )
+
+func init() {
+	log.Println("测试最好使用 docker run -p 80:80 kennethreitz/httpbin")
+}
 
 type WebGet struct {
 	PreGetUrl

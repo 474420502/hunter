@@ -116,7 +116,7 @@ func (hunter *Hunter) recursionTasks(cxt *TaskContext) {
 			tasknode := itask.(ITaskNode)
 			task := tasknode.Task()
 
-			ncxt.curPath = cxt.parent.Path()
+			ncxt.curPath = cxt.current.Path()
 			if itid, ok := task.(IIdentity); ok {
 				ncxt.curTaskID = itid.GetID()
 			} else {
@@ -134,7 +134,7 @@ func (hunter *Hunter) recursionTasks(cxt *TaskContext) {
 				after.After(cxt)
 			}
 
-			tasknode.SetPath(cxt.parent.Path() + "." + ncxt.curTaskID)
+			tasknode.SetPath(cxt.current.Path() + "." + ncxt.curTaskID)
 			ncxt.parent = cxt.current
 			ncxt.current = tasknode
 			hunter.recursionTasks(ncxt)
