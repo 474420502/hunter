@@ -4,11 +4,7 @@ import "github.com/474420502/requests"
 
 // TaskContext 上下文
 type TaskContext struct {
-	hunter *Hunter
-
-	curPath   string
-	curTaskID string
-
+	hunter   *Hunter
 	workflow *requests.Workflow
 
 	parent  ITaskNode
@@ -69,12 +65,12 @@ func (cxt *TaskContext) SetWorkflow(workflow *requests.Workflow) {
 
 // TaskID Get Task ID
 func (cxt *TaskContext) TaskID() string {
-	return cxt.curTaskID
+	return cxt.current.TaskID()
 }
 
 // Path curren  Task tree path.
 func (cxt *TaskContext) Path() string {
-	return cxt.curPath
+	return cxt.current.Path()
 }
 
 // Hunt Hunt() = cxt.Workflow().Execute()

@@ -93,14 +93,14 @@ func (hunter *Hunter) execute(task ITask) {
 	cxt := NewContext()
 
 	btask := &BaseTask{}
-	// btask.SetTask(task)
+	btask.SetTask(task)
 	btask.SetParent(nil)
 	btask.SetChildren(hunter.createQueue())
 
-	cxt.current = btask
-	cxt.hunter = hunter
-	cxt.AddTask(task)
+	cxt.parent = btask
+	cxt.parent.Children().Push(btask)
 
+	cxt.hunter = hunter
 	hunter.recursionTasks(cxt)
 }
 
@@ -108,21 +108,22 @@ func (hunter *Hunter) recursionTasks(cxt *TaskContext) {
 
 	autoid := 0
 
-	for children := cxt.current.Children(); children != nil && children.Size() > 0; {
+	for children := cxt.parent.Children(); children != nil && children.Size() > 0; {
 		if itask, ok := children.Pop(); ok {
-
+			sautoid := strconv.Itoa(autoid)
 			ncxt := NewContext()
 
 			tasknode := itask.(ITaskNode)
+			tasknode.SetID(sautoid)
+
+			cxt.current = tasknode
 			task := tasknode.Task()
 
-			ncxt.curPath = cxt.current.Path()
-			if itid, ok := task.(IIdentity); ok {
-				ncxt.curTaskID = itid.GetID()
-			} else {
-				ncxt.curTaskID = strconv.Itoa(autoid)
-				autoid++
-			}
+			// if itid, ok := task.(IIdentity); ok {
+			// 	ncxt.curTaskID = itid.GetID()
+			// } else {
+			// 	ncxt.curTaskID = sautoid
+			// }
 
 			if before, ok := task.(IBefore); ok {
 				before.Before(cxt)
@@ -134,10 +135,12 @@ func (hunter *Hunter) recursionTasks(cxt *TaskContext) {
 				after.After(cxt)
 			}
 
-			tasknode.SetPath(cxt.current.Path() + "." + ncxt.curTaskID)
+			tasknode.SetPath(cxt.parent.Path() + "." + cxt.TaskID())
 			ncxt.parent = cxt.current
-			ncxt.current = tasknode
+			ncxt.hunter = cxt.hunter
 			hunter.recursionTasks(ncxt)
+
+			autoid++
 		}
 	}
 

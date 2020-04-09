@@ -67,7 +67,8 @@ func TestCasePostForm(t *testing.T) {
 	}
 
 	if iform, ok := data["form"]; ok {
-		if iform.(string) != "hello form" {
+		form := iform.(map[string]interface{})
+		if form["param"].(string) != "hello form" {
 			t.Error(iform)
 		}
 	}
@@ -79,17 +80,34 @@ type WebSub struct {
 
 func (web *WebSub) Execute(cxt *TaskContext) {
 	wf := cxt.Workflow()
-	wf.SetBodyAuto(`{"a": "1"}`)
+	wf.SetBodyAuto(`{"a": "1","url":["http://httpbin.org/post","http://httpbin.org/get"]}`)
 	resp, err := wf.Execute()
 	if err != nil {
 		panic(err)
 	}
 	cxt.SetShare("test", resp.Content())
+
+	data := make(map[string]interface{})
+	json.Unmarshal([]byte(resp.ContentBytes()), &data)
+	if urlList, ok := data["json"].(map[string]interface{})["url"].([]interface{}); ok {
+		for _, is := range urlList {
+			s := is.(string)
+			cxt.AddTask(&WebSub1{PrePostUrl(s)})
+		}
+	}
+}
+
+type WebSub1 struct {
+	PrePostUrl
+}
+
+func (web *WebSub1) Execute(cxt *TaskContext) {
+	log.Panic(cxt.Path() + "." + cxt.TaskID())
 }
 
 func TestCaseWebSub(t *testing.T) {
 	hunter := NewHunter()
-	hunter.AddTask(&WebSub{PrePostUrl: "http://httpbin.org/post"})
+	hunter.AddTask(&WebSub{"http://httpbin.org/post"})
 	hunter.Execute()
 
 	data := make(map[string]interface{})
