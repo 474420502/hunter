@@ -117,13 +117,9 @@ func (hunter *Hunter) recursionTasks(cxt *TaskContext) {
 			tasknode.SetID(sautoid)
 
 			cxt.current = tasknode
-			task := tasknode.Task()
+			cxt.current.SetPath(cxt.parent.Path()) //
 
-			// if itid, ok := task.(IIdentity); ok {
-			// 	ncxt.curTaskID = itid.GetID()
-			// } else {
-			// 	ncxt.curTaskID = sautoid
-			// }
+			task := tasknode.Task()
 
 			if before, ok := task.(IBefore); ok {
 				before.Before(cxt)
@@ -135,8 +131,8 @@ func (hunter *Hunter) recursionTasks(cxt *TaskContext) {
 				after.After(cxt)
 			}
 
-			tasknode.SetPath(cxt.parent.Path() + "." + cxt.TaskID())
 			ncxt.parent = cxt.current
+			ncxt.parent.SetPath(ncxt.parent.Path() + "." + ncxt.parent.TaskID()) //补正ncxt的路径
 			ncxt.hunter = cxt.hunter
 			hunter.recursionTasks(ncxt)
 
