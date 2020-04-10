@@ -27,10 +27,23 @@ type Hunter struct {
 	createQueue func() *pqueue.PriorityQueue
 }
 
-// NewHunter 默认最大优先
-func NewHunter() *Hunter {
-	return NewPriorityMaxHunter()
+// NewHunter 默认最大优先, tasks为预先需要addtask
+func NewHunter(tasks ...ITask) *Hunter {
+	hunter := NewPriorityMaxHunter()
+	for _, task := range tasks {
+		hunter.AddTask(task)
+	}
+	return hunter
 }
+
+// NewHunterFromTasks 默认最大优先
+// func NewHunterFromTasks(tasks ...ITask) *Hunter {
+// 	hunter := NewPriorityMaxHunter()
+// 	for _, task := range tasks {
+// 		hunter.AddTask(task)
+// 	}
+// 	return hunter
+// }
 
 // NewPriorityHunter 自定义优先处理队列
 func NewPriorityHunter(queueCreator func() *pqueue.PriorityQueue) *Hunter {
