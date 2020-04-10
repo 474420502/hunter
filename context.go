@@ -2,6 +2,10 @@ package hunter
 
 import "github.com/474420502/requests"
 
+type IHunt interface {
+	Hunt() (*requests.Response, error)
+}
+
 // TaskContext 上下文
 type TaskContext struct {
 	hunter   *Hunter
@@ -80,5 +84,8 @@ func (cxt *TaskContext) GetHunter() *Hunter {
 
 // Hunt Hunt() = cxt.Workflow().Execute()
 func (cxt *TaskContext) Hunt() (*requests.Response, error) {
+	if ihunt, ok := cxt.current.(IHunt); ok {
+		return ihunt.Hunt()
+	}
 	return cxt.workflow.Execute()
 }
