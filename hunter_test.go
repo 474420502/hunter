@@ -22,24 +22,6 @@ func (web *WebGet) Execute(cxt *TaskContext) {
 	cxt.SetShare("test", resp.Content())
 }
 
-func TestCasePreUrl(t *testing.T) {
-	hunter := NewHunter()
-	hunter.AddTask(&WebGet{PreGetUrl: "http://httpbin.org/get"})
-	hunter.Execute()
-
-	data := make(map[string]interface{})
-	content := hunter.GetShare("test").(string)
-	err := json.Unmarshal([]byte(content), &data)
-	if err != nil {
-		t.Error(err)
-	}
-	if iurl, ok := data["url"]; ok {
-		if iurl.(string) != "http://httpbin.org/get" {
-			t.Error(iurl)
-		}
-	}
-}
-
 type WebPost struct {
 	PrePostUrl
 }
@@ -102,34 +84,18 @@ type WebSub1 struct {
 }
 
 func (web *WebSub1) Execute(cxt *TaskContext) {
-	log.Panic(cxt.Path() + "." + cxt.TaskID())
+	cxt.SetShare("test", cxt.Path()+"."+cxt.TaskID())
 }
 
 func TestCaseWebSub(t *testing.T) {
+
 	hunter := NewHunter()
 	hunter.AddTask(&WebSub{"http://httpbin.org/post"})
 	hunter.Execute()
 
-	data := make(map[string]interface{})
 	content := hunter.GetShare("test").(string)
-	err := json.Unmarshal([]byte(content), &data)
-	if err != nil {
-		t.Error(err)
+	if content != ".0.1" {
+		t.Error(content)
 	}
 
-	if ijson, ok := data["json"]; ok {
-		if j, ok := ijson.(map[string]interface{}); ok {
-			if ia, ok := j["a"]; ok {
-				if ia.(string) != "1" {
-					t.Error(ia)
-				}
-			} else {
-				t.Error(ia)
-			}
-
-		} else {
-			t.Error(j)
-		}
-
-	}
 }

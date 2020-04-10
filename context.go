@@ -73,6 +73,11 @@ func (cxt *TaskContext) Path() string {
 	return cxt.current.Path()
 }
 
+// GetHunter 获取share的数据, 存储用的
+func (cxt *TaskContext) GetHunter() *Hunter {
+	return cxt.hunter
+}
+
 // Hunt Hunt() = cxt.Workflow().Execute()
 func (cxt *TaskContext) Hunt() (*requests.Response, error) {
 	return cxt.workflow.Execute()

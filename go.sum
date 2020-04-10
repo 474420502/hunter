@@ -1,5 +1,7 @@
 github.com/474420502/focus v0.8.1 h1:PZwCgzcnxwx7ZZCWc/XKLVaZPH9e4YX9cP4ckyT2HDA=
 github.com/474420502/focus v0.8.1/go.mod h1:jrDXvK1CnUJ3PCR3ZJVYinbS2Yz5kM8OoAbCLe6AF7Y=
+github.com/474420502/gurl v0.0.1 h1:GYrbbDNVEcA7dyT3QjdEHILXydTkUs5ghqEZu6xdh9o=
+github.com/474420502/gurl v0.0.1/go.mod h1:Sx+9gFgFVM33bO7RQ8nj/I6JufDKPSCo0sikgPYmEp0=
 github.com/474420502/requests v1.0.0 h1:yY5OP1TJRsu2yI0qMW+4OteFqmNmudhwgLuimvXLPPU=
 github.com/474420502/requests v1.0.0/go.mod h1:SLXrQ5dL9c7dkIeKNUCBAjOIt3J9KFCS2RQjWJecNwo=
 github.com/474420502/requests v1.4.0 h1:dnufhTVTo/N1SdWVqBKm4xKDRb0N4P7D7Zg1FJFO29I=
