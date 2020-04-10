@@ -3,7 +3,7 @@ package hunter
 import "github.com/474420502/requests"
 
 type IHunt interface {
-	Hunt() (*requests.Response, error)
+	Hunt() (requests.IResponse, error)
 }
 
 // TaskContext 上下文
@@ -83,8 +83,8 @@ func (cxt *TaskContext) GetHunter() *Hunter {
 }
 
 // Hunt Hunt() = cxt.Workflow().Execute()
-func (cxt *TaskContext) Hunt() (*requests.Response, error) {
-	if ihunt, ok := cxt.current.(IHunt); ok {
+func (cxt *TaskContext) Hunt() (requests.IResponse, error) {
+	if ihunt, ok := cxt.current.Task().(IHunt); ok {
 		return ihunt.Hunt()
 	}
 	return cxt.workflow.Execute()

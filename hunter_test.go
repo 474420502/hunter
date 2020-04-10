@@ -70,7 +70,7 @@ func (web *WebSub) Execute(cxt *TaskContext) {
 	cxt.SetShare("test", resp.Content())
 
 	data := make(map[string]interface{})
-	json.Unmarshal([]byte(resp.ContentBytes()), &data)
+	json.Unmarshal(resp.Content(), &data)
 	if urlList, ok := data["json"].(map[string]interface{})["url"].([]interface{}); ok {
 		for _, is := range urlList {
 			s := is.(string)
