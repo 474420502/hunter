@@ -29,6 +29,11 @@ type IIdentity interface {
 	GetID() string
 }
 
+// IClose 关闭
+type IClose interface {
+	Close() error
+}
+
 // ITaskNode 任务节点
 type ITaskNode interface {
 	Parent() ITaskNode

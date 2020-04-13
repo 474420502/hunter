@@ -1,6 +1,7 @@
 package hunter
 
 import (
+	"log"
 	"strconv"
 
 	pqueue "github.com/474420502/focus/priority_queue"
@@ -49,13 +50,6 @@ func NewHunter(tasks ...ITask) *Hunter {
 func NewPriorityHunter(queueCreator func() *pqueue.PriorityQueue) *Hunter {
 	hunter := &Hunter{}
 	hunter.createQueue = queueCreator
-
-	// hunter.task = &BaseTask{}
-	// hunter.task.SetParent(nil)
-	// hunter.task.SetChildren(hunter.createQueue())
-
-	// hunter.cxt = NewContext()
-	// hunter.cxt.curNode = hunter.task
 
 	hunter.share = make(map[string]interface{})
 	return hunter
@@ -156,8 +150,20 @@ func (hunter *Hunter) recursionTasks(cxt *TaskContext) {
 }
 
 // Stop 停止任务
-func (hunter *Hunter) Stop() {
+func (hunter *Hunter) close(itask ITask) {
+	if iclose, ok := itask.(IClose); ok {
+		if err := iclose.Close(); err != nil {
+			log.Println(err)
+		}
+	}
 
+}
+
+// Stop 停止任务
+func (hunter *Hunter) Stop() {
+	for _, task := range hunter.tasks {
+		hunter.close(task)
+	}
 }
 
 // AddTask 执行任务

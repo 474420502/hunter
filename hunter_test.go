@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	log.Println("测试最好使用 docker run -p 80:80 kennethreitz/httpbin")
+	log.Println("recommend: docker run -p 80:80 kennethreitz/httpbin")
 }
 
 type WebGet struct {
