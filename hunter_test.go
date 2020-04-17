@@ -84,7 +84,7 @@ type WebSub1 struct {
 }
 
 func (web *WebSub1) Execute(cxt *TaskContext) {
-	cxt.SetShare("test", cxt.Path()+"."+cxt.TaskID())
+	cxt.SetShare("test", cxt.Path()+"/"+cxt.TaskID())
 }
 
 func TestCaseWebSub(t *testing.T) {
@@ -94,7 +94,7 @@ func TestCaseWebSub(t *testing.T) {
 	hunter.Execute()
 
 	content := hunter.GetShare("test").(string)
-	if content != ".0.1" {
+	if content != "/0/1" {
 		t.Error(content)
 	}
 

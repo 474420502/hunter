@@ -139,7 +139,7 @@ func (hunter *Hunter) recursionTasks(cxt *TaskContext) {
 			}
 
 			ncxt.parent = cxt.current
-			ncxt.parent.SetPath(ncxt.parent.Path() + "." + ncxt.parent.TaskID()) //补正ncxt的路径
+			ncxt.parent.SetPath(ncxt.parent.Path() + "/" + ncxt.parent.TaskID()) //补正ncxt的路径
 			ncxt.hunter = cxt.hunter
 			hunter.recursionTasks(ncxt)
 
