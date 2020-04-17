@@ -4,6 +4,10 @@ cloud.google.com/go v0.38.0/go.mod h1:990N+gfupTy94rShfmMCWGDn0LpTmnzTp2qbd1dvSR
 cloud.google.com/go v0.41.0/go.mod h1:OauMR7DV8fzvZIl2qg6rkaIhD/vmgk4iwEw/h6ercmg=
 github.com/474420502/focus v0.8.1 h1:PZwCgzcnxwx7ZZCWc/XKLVaZPH9e4YX9cP4ckyT2HDA=
 github.com/474420502/focus v0.8.1/go.mod h1:jrDXvK1CnUJ3PCR3ZJVYinbS2Yz5kM8OoAbCLe6AF7Y=
+github.com/474420502/gcurl v0.0.3 h1:gbvJ9JiiiaCkLispDZ9tlJPFo8K4e7t4JTFze3UlHHc=
+github.com/474420502/gcurl v0.0.3/go.mod h1:qtCzAZZbVRIsBt0lNUh2I0qDniU9T3E21aSsVUYo7Hc=
+github.com/474420502/gcurl v0.0.4 h1:eR1BNXvQ4T245dotWpjDzAMWch+FTTfScqzsdq93JK0=
+github.com/474420502/gcurl v0.0.4/go.mod h1:qtCzAZZbVRIsBt0lNUh2I0qDniU9T3E21aSsVUYo7Hc=
 github.com/474420502/gurl v0.0.2 h1:j1XJSd41M8v1M9glkIVFTR00j87DEt4JoeITELP8Pfk=
 github.com/474420502/gurl v0.0.2/go.mod h1:gM500QucE2upVvM4eRIVAhP6gLbcCVEemJdzS1Qbf5E=
 github.com/474420502/requests v1.4.0 h1:dnufhTVTo/N1SdWVqBKm4xKDRb0N4P7D7Zg1FJFO29I=

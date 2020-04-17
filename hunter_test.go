@@ -33,7 +33,7 @@ func (web *WebPost) Execute(cxt *TaskContext) {
 	if err != nil {
 		panic(err)
 	}
-	cxt.SetShare("test", resp.Content())
+	cxt.SetShare("test", string(resp.Content()))
 }
 
 func TestCasePostForm(t *testing.T) {

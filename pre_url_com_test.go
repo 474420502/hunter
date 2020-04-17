@@ -14,7 +14,7 @@ func (web *WebPreUrl) Execute(cxt *TaskContext) {
 	if err != nil {
 		panic(err)
 	}
-	cxt.SetShare("test", resp.Content())
+	cxt.SetShare("test", string(resp.Content()))
 }
 
 func TestCasePreUrl(t *testing.T) {
