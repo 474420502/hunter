@@ -3,7 +3,7 @@ module github.com/474420502/hunter
 go 1.14
 
 require (
-	github.com/474420502/focus v0.8.1
+	github.com/474420502/focus v0.9.0
 	github.com/474420502/gcurl v0.0.4
 	github.com/474420502/requests v1.5.0
 	github.com/Pallinder/go-randomdata v1.1.0

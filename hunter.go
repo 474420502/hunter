@@ -4,6 +4,8 @@ import (
 	"log"
 	"strconv"
 
+	astack "github.com/474420502/focus/stack/arraystack"
+
 	pqueue "github.com/474420502/focus/priority_queue"
 	"github.com/474420502/requests"
 )
@@ -26,6 +28,8 @@ type Hunter struct {
 
 	tasks       []ITask
 	createQueue func() *pqueue.PriorityQueue
+
+	executes *astack.Stack // *TaskContext
 }
 
 // NewHunter 默认最大优先, tasks为预先需要addtask
@@ -50,6 +54,7 @@ func NewHunter(tasks ...ITask) *Hunter {
 func NewPriorityHunter(queueCreator func() *pqueue.PriorityQueue) *Hunter {
 	hunter := &Hunter{}
 	hunter.createQueue = queueCreator
+	hunter.executes = astack.New()
 
 	hunter.share = make(map[string]interface{})
 	return hunter
@@ -108,42 +113,54 @@ func (hunter *Hunter) execute(task ITask) {
 	cxt.parent.Children().Push(btask)
 
 	cxt.hunter = hunter
-	hunter.recursionTasks(cxt)
+
+	// hunter.recursionTasks(cxt)
+
+	hunter.executes.Push(cxt)
+	hunter.recursionTasks()
 }
 
-func (hunter *Hunter) recursionTasks(cxt *TaskContext) {
+func (hunter *Hunter) recursionTasks() {
 
-	autoid := 0
+	// 这层再加一个 Children 提取
 
-	for children := cxt.parent.Children(); children != nil && children.Size() > 0; {
-		if itask, ok := children.Pop(); ok {
-			sautoid := strconv.Itoa(autoid)
-			ncxt := NewContext()
+	for icxt, ok := hunter.executes.Pop(); ok; icxt, ok = hunter.executes.Pop() {
 
-			tasknode := itask.(ITaskNode)
-			tasknode.SetID(sautoid)
+		cxt := icxt.(*TaskContext)
+		for children := cxt.parent.Children(); children != nil && children.Size() > 0; {
+			if itask, ok := children.Pop(); ok {
+				sautoid := strconv.Itoa(cxt.autoid)
 
-			cxt.current = tasknode
-			cxt.current.SetPath(cxt.parent.Path()) //
+				tasknode := itask.(ITaskNode)
+				tasknode.SetID(sautoid)
 
-			task := tasknode.Task()
+				cxt.current = tasknode
+				cxt.current.SetPath(cxt.parent.Path()) //
 
-			if before, ok := task.(IBefore); ok {
-				before.Before(cxt)
+				task := tasknode.Task()
+
+				if before, ok := task.(IBefore); ok {
+					before.Before(cxt)
+				}
+
+				tasknode.Task().Execute(cxt)
+
+				if after, ok := task.(IAfter); ok {
+					after.After(cxt)
+				}
+
+				cxt.autoid++
+
+				ncxt := NewContext()
+				ncxt.autoid = 0
+				ncxt.parent = cxt.current
+				ncxt.parent.SetPath(ncxt.parent.Path() + "/" + ncxt.parent.TaskID()) //补正ncxt的路径
+				ncxt.hunter = cxt.hunter
+
+				// hunter.recursionTasks(ncxt)
+				hunter.executes.Push(ncxt)
+
 			}
-
-			tasknode.Task().Execute(cxt)
-
-			if after, ok := task.(IAfter); ok {
-				after.After(cxt)
-			}
-
-			ncxt.parent = cxt.current
-			ncxt.parent.SetPath(ncxt.parent.Path() + "/" + ncxt.parent.TaskID()) //补正ncxt的路径
-			ncxt.hunter = cxt.hunter
-			hunter.recursionTasks(ncxt)
-
-			autoid++
 		}
 	}
 

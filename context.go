@@ -13,6 +13,7 @@ type TaskContext struct {
 
 	parent  ITaskNode
 	current ITaskNode
+	autoid  int
 }
 
 // NewContext 任务上下文
