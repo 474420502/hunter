@@ -121,13 +121,11 @@ func (hunter *Hunter) execute(task ITask) {
 }
 
 func (hunter *Hunter) recursionTasks() {
-
 	// 这层再加一个 Children 提取
-
-	for icxt, ok := hunter.executes.Pop(); ok; icxt, ok = hunter.executes.Pop() {
+	for icxt, ok := hunter.executes.Peek(); ok; icxt, ok = hunter.executes.Peek() {
 
 		cxt := icxt.(*TaskContext)
-		for children := cxt.parent.Children(); children != nil && children.Size() > 0; {
+		if children := cxt.parent.Children(); children != nil && children.Size() > 0 {
 			if itask, ok := children.Pop(); ok {
 				sautoid := strconv.Itoa(cxt.autoid)
 
@@ -159,8 +157,9 @@ func (hunter *Hunter) recursionTasks() {
 
 				// hunter.recursionTasks(ncxt)
 				hunter.executes.Push(ncxt)
-
 			}
+		} else {
+			hunter.executes.Pop()
 		}
 	}
 
