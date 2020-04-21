@@ -99,3 +99,48 @@ func TestCaseWebSub(t *testing.T) {
 	}
 
 }
+
+type WebSavePoint struct {
+	PrePostUrl
+}
+
+func (web *WebSavePoint) Execute(cxt *TaskContext) {
+	wf := cxt.Workflow()
+	wf.SetBodyAuto(`{"a": "1","url":["http://httpbin.org/post","http://httpbin.org/get"]}`)
+	resp, err := wf.Execute()
+	if err != nil {
+		panic(err)
+	}
+	cxt.SetShare("test", resp.Content())
+
+	data := make(map[string]interface{})
+	json.Unmarshal(resp.Content(), &data)
+	if urlList, ok := data["json"].(map[string]interface{})["url"].([]interface{}); ok {
+		for _, is := range urlList {
+			s := is.(string)
+			cxt.AddTask(&WebSavePoint1{PrePostUrl(s)})
+		}
+	}
+}
+
+type WebSavePoint1 struct {
+	PrePostUrl
+}
+
+func (web *WebSavePoint1) Execute(cxt *TaskContext) {
+	cxt.SetShare("test", cxt.Path()+"/"+cxt.TaskID())
+	cxt.hunter.savePoint()
+}
+
+func TestSavePoint(t *testing.T) {
+
+	hunter := NewHunter()
+	hunter.AddTask(&WebSavePoint{"http://httpbin.org/post"})
+	hunter.Execute()
+
+	content := hunter.GetShare("test").(string)
+	if content != "/0/1" {
+		t.Error(content)
+	}
+
+}

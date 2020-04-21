@@ -95,9 +95,15 @@ func (hunter *Hunter) SetShare(key string, value interface{}) {
 
 // Execute 执行任务
 func (hunter *Hunter) Execute() {
+
+	if hunter.executes.Size() != 0 {
+		hunter.recursionTasks()
+	}
+
 	for _, task := range hunter.tasks {
 		hunter.execute(task)
 	}
+
 }
 
 // Execute 执行任务
@@ -185,6 +191,23 @@ func (hunter *Hunter) Stop() {
 // AddTask 执行任务
 func (hunter *Hunter) AddTask(task ITask) {
 	hunter.tasks = append(hunter.tasks, task)
+}
+
+// SavePoint 持续
+func (hunter *Hunter) savePoint() {
+	// f, err := os.OpenFile("./gob.log", os.O_CREATE|os.O_TRUNC|os.O_RDWR, os.ModePerm)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// enc := gob.NewEncoder(f)
+	// err = enc.Encode(hunter.executes.Values())
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// for _, iv := range hunter.executes.Values() {
+	// 	tc := iv.(*TaskContext)
+
+	// }
 }
 
 // Execute 执行
