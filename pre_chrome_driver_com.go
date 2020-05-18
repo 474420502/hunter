@@ -20,7 +20,7 @@ func (u *PreChromeUrl) Before(ctx *TaskContext) {
 	var service *selenium.Service
 
 	if u.service == nil {
-		for i := 0; i < 20; i++ {
+		for i := 0; i < 50; i++ {
 			if u.Port == 0 {
 				u.Port = randomdata.Number(10000, 50000)
 			}
