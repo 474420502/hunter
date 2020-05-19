@@ -16,6 +16,8 @@ github.com/474420502/requests v1.4.0 h1:dnufhTVTo/N1SdWVqBKm4xKDRb0N4P7D7Zg1FJFO
 github.com/474420502/requests v1.4.0/go.mod h1:SLXrQ5dL9c7dkIeKNUCBAjOIt3J9KFCS2RQjWJecNwo=
 github.com/474420502/requests v1.5.0 h1:xIWTpnrrf3q0drSgQFFjUj33szrpContqkMEm/eUUtw=
 github.com/474420502/requests v1.5.0/go.mod h1:SLXrQ5dL9c7dkIeKNUCBAjOIt3J9KFCS2RQjWJecNwo=
+github.com/474420502/requests v1.5.1 h1:miv6O4RMbZ8I0ZdUTLf/EU5Dmewc/4IL/DmUMwtuv8M=
+github.com/474420502/requests v1.5.1/go.mod h1:SLXrQ5dL9c7dkIeKNUCBAjOIt3J9KFCS2RQjWJecNwo=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802 h1:1BDTz0u9nC3//pOCMdNH+CiXJVYJh5UQNCOBG7jbELc=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
