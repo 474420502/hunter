@@ -14,6 +14,8 @@ type TaskContext struct {
 	parent  ITaskNode
 	current ITaskNode
 	autoid  int
+
+	cancel bool
 }
 
 // NewContext 任务上下文
@@ -81,6 +83,11 @@ func (cxt *TaskContext) Path() string {
 // GetHunter 获取share的数据, 存储用的
 func (cxt *TaskContext) GetHunter() *Hunter {
 	return cxt.hunter
+}
+
+// SetCancelNext set cancel next func(execute after ...)
+func (cxt *TaskContext) SetCancelNext(is bool) {
+	cxt.cancel = is
 }
 
 // Hunt Hunt() = cxt.Workflow().Execute()

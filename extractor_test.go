@@ -1,12 +1,11 @@
 package hunter
 
 import (
-	"log"
 	"testing"
 )
 
 type AreaCode struct {
-	PreFile
+	PreGlobFile
 }
 
 func (a *AreaCode) Execute(cxt *TaskContext) {
@@ -14,23 +13,42 @@ func (a *AreaCode) Execute(cxt *TaskContext) {
 	if err != nil {
 		panic(err)
 	}
+
+	t := cxt.GetShare("test").(*testing.T)
+
 	etor := NewExtractor(r.Content())
 	xp, err := etor.XPath("//div[@class='ip']")
 	if err != nil {
 		panic(err)
 	}
 
-	log.Println(xp.ForEachText("./h4"))
-	xpli, errlist := xp.ForEach("./h4/ul//li")
-	if len(errlist) != 0 {
-		panic(err)
+	pri, errl := xp.ForEachText("./h4")
+	if len(errl) != 0 {
+		t.Error(errl)
 	}
-	log.Println(xpli.ForEachString("./h5/text()"))
+
+	if len(pri) != 31 {
+		t.Error(pri)
+	}
+
+	xpli, errlist := xp.ForEach("./ul//li")
+	if len(errlist) != 0 {
+		t.Error(err, xpli)
+	}
+	area, _ := xpli.ForEachString("./h5/text()")
+	if len(area) != 345 {
+		t.Error(len(area), area)
+	}
+	city, _ := xpli.ForEachString("./ul/li//text()")
+
+	if len(city) != 3131 {
+		t.Error(len(city))
+	}
 }
 
 func TestExtractor(t *testing.T) {
 	ht := NewHunter()
-	ht.AddTask(&AreaCode{"./testfile/area.html"})
+	ht.SetShare("test", t)
+	ht.AddTask(&AreaCode{"./testfile/*.html"})
 	ht.Execute()
-	t.Error()
 }

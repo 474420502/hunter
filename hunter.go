@@ -147,10 +147,18 @@ func (hunter *Hunter) recursionTasks() {
 					before.Before(cxt)
 				}
 
-				tasknode.Task().Execute(cxt)
+				if cxt.cancel {
+					cxt.cancel = false
+				} else {
+					tasknode.Task().Execute(cxt)
+				}
 
 				if after, ok := task.(IAfter); ok {
-					after.After(cxt)
+					if cxt.cancel {
+						cxt.cancel = false
+					} else {
+						after.After(cxt)
+					}
 				}
 
 				cxt.autoid++
