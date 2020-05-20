@@ -91,6 +91,18 @@ func (a *AreaCode) Execute(cxt *TaskContext) {
 		}
 	}
 
+	attrs, _ := xpli.ForEachAttr("./h5")
+	if len(attrs) != 345 {
+		t.Error(len(attrs))
+		return
+	}
+
+	types, _ := xpli.ForEachType("./h5")
+	if len(types) != 345 {
+		t.Error(len(types))
+		return
+	}
+
 }
 
 func TestExtractor(t *testing.T) {
