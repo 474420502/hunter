@@ -2,6 +2,7 @@ package hunter
 
 import (
 	"log"
+	"math"
 	"testing"
 
 	"github.com/lestrrat-go/libxml2"
@@ -65,4 +66,62 @@ func TestDriver(t *testing.T) {
 	if title != "httpbin.org" {
 		t.Error(title)
 	}
+}
+
+type WebCookie struct {
+	PreChromeUrl
+}
+
+func (web *WebCookie) Execute(cxt *TaskContext) {
+	t := cxt.GetShare("test").(*testing.T)
+	c := &selenium.Cookie{Name: "token", Value: "nonolive123", Expiry: math.MaxUint32, Path: "/", Secure: false}
+
+	if err := web.AddCookie(c); err != nil {
+		t.Error(err)
+	}
+	resp, err := cxt.Hunt()
+	if err != nil {
+		panic(err)
+	}
+
+	wd := resp.GetResponse().(selenium.WebDriver)
+	if cookies, err := wd.GetCookies(); err == nil {
+		c := cookies[0]
+		if c.Name != "token" {
+			t.Error("token error", c.Name)
+			if c.Value != "nonolive123" {
+				t.Error("token error", c.Value)
+			}
+		}
+	} else {
+		t.Error(err)
+		return
+	}
+
+	web.DeleteAllCookies()
+
+	if c, err := wd.GetCookie("token"); err == nil {
+		t.Error(c)
+	}
+
+	if cookies, err := wd.GetCookies(); err == nil {
+
+		if len(cookies) != 0 {
+			t.Error("cookies len != 0")
+		}
+
+	} else {
+		t.Error(err)
+		return
+	}
+}
+
+func TestDriverCookie(t *testing.T) {
+	preurl := &WebCookie{}
+	preurl.PreUrl = "http://httpbin.org/cookies"
+
+	hunter := NewHunter(preurl) // first params PreCurlUrl
+	hunter.SetShare("test", t)
+	hunter.Execute()
+	defer hunter.Stop()
 }
