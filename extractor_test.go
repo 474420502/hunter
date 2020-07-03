@@ -17,6 +17,11 @@ func (a *AreaCode) Execute(cxt *TaskContext) {
 		panic(err)
 	}
 
+	cxt.SetShare("cookies", r.GetCookie())
+	cxt.SetShare("header", r.GetHeader())
+	cxt.SetShare("status", r.GetStatus())
+	cxt.SetShare("code", r.GetStatusCode())
+
 	t := cxt.GetShare("test").(*testing.T)
 
 	etor := NewExtractor(r.Content())
@@ -89,6 +94,18 @@ func (a *AreaCode) Execute(cxt *TaskContext) {
 			t.Error("all h5 attribute, key = value")
 			return
 		}
+	}
+
+	attrs, _ := xpli.ForEachAttr("./h5")
+	if len(attrs) != 345 {
+		t.Error(len(attrs))
+		return
+	}
+
+	types, _ := xpli.ForEachType("./h5")
+	if len(types) != 345 {
+		t.Error(len(types))
+		return
 	}
 
 }
