@@ -25,7 +25,7 @@ func (a *AreaCode) Execute(cxt *TaskContext) {
 	t := cxt.GetShare("test").(*testing.T)
 
 	etor := NewExtractor(r.Content())
-	xp, err := etor.XPath("//div[@class='ip']")
+	xp, err := etor.XPaths("//div[@class='ip']")
 	if err != nil {
 		panic(err)
 	}

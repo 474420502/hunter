@@ -23,8 +23,8 @@ func NewExtractor(content []byte) *Extractor {
 	return &Extractor{Content: content, doc: doc}
 }
 
-// XPath multi xpath extractor
-func (etor *Extractor) XPath(exp string) (*XPath, error) {
+// XPaths multi xpath extractor
+func (etor *Extractor) XPaths(exp string) (*XPath, error) {
 	result, err := etor.doc.Find(exp)
 	return &XPath{result: []types.XPathResult{result}, errorFlags: ERROR_SKIP}, err
 }

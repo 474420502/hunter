@@ -6,6 +6,8 @@ github.com/474420502/focus v0.12.0 h1:+icbmj7IEOefvTegHt5EpcHt6WFbe2miIrceUJx2Ev
 github.com/474420502/focus v0.12.0/go.mod h1:d0PMjtMxFz1a9HIhwyFPkWa+JF+0LgOrEUfd8iZka6s=
 github.com/474420502/gcurl v0.1.0 h1:aKPP27qAnofntTqqVF8rjejHBWVlYWzFEZGdqjBiMgw=
 github.com/474420502/gcurl v0.1.0/go.mod h1:hws5q/Ao64bXLLDnldz9VyTQUndTWc/i5DzdEazFfoM=
+github.com/474420502/gcurl v0.1.2 h1:ON9Yz3IgAdtDlFlHfkAJ3aIEBDxH0RiViPE5ST5ohKg=
+github.com/474420502/gcurl v0.1.2/go.mod h1:hws5q/Ao64bXLLDnldz9VyTQUndTWc/i5DzdEazFfoM=
 github.com/474420502/requests v1.6.0 h1:f4h4j40eT0P5whhg9LdkotD8CaKjtuDu/vz9iSUkCgY=
 github.com/474420502/requests v1.6.0/go.mod h1:SLXrQ5dL9c7dkIeKNUCBAjOIt3J9KFCS2RQjWJecNwo=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
@@ -15,6 +17,8 @@ github.com/BurntSushi/xgbutil v0.0.0-20160919175755-f7c97cef3b4e h1:4ZrkT/RzpnRO
 github.com/BurntSushi/xgbutil v0.0.0-20160919175755-f7c97cef3b4e/go.mod h1:uw9h2sd4WWHOPdJ13MQpwK5qYWKYDumDqxWWIknEQ+k=
 github.com/Pallinder/go-randomdata v1.1.0 h1:gUubB1IEUliFmzjqjhf+bgkg1o6uoFIkRsP3VrhEcx8=
 github.com/Pallinder/go-randomdata v1.1.0/go.mod h1:yHmJgulpD2Nfrm0cR9tI/+oAgRqCQQixsA8HyRZfV9Y=
+github.com/Pallinder/go-randomdata v1.2.0 h1:DZ41wBchNRb/0GfsePLiSwb0PHZmT67XY00lCDlaYPg=
+github.com/Pallinder/go-randomdata v1.2.0/go.mod h1:yHmJgulpD2Nfrm0cR9tI/+oAgRqCQQixsA8HyRZfV9Y=
 github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5 h1:0CwZNZbxp69SHPdPJAN/hZIm0C4OItdklCFmMRWYpio=
 github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5/go.mod h1:wHh0iHkYZB8zMSxRWpUBQtwG5a7fFgvEO+odwuTv2gs=
 github.com/blang/semver v3.5.1+incompatible h1:cQNTCjp13qL8KC3Nbxr/y2Bqb63oX6wdnnjpJbkM4JQ=
