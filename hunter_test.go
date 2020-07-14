@@ -27,7 +27,7 @@ type WebPost struct {
 }
 
 func (web *WebPost) Execute(cxt *TaskContext) {
-	wf := cxt.Workflow()
+	wf := cxt.Temporary()
 	wf.SetBodyAuto("param=hello form")
 	resp, err := wf.Execute()
 	if err != nil {
@@ -61,7 +61,7 @@ type WebSub struct {
 }
 
 func (web *WebSub) Execute(cxt *TaskContext) {
-	wf := cxt.Workflow()
+	wf := cxt.Temporary()
 	wf.SetBodyAuto(`{"a": "1","url":["http://httpbin.org/post","http://httpbin.org/get"]}`)
 	resp, err := wf.Execute()
 	if err != nil {
@@ -105,7 +105,7 @@ type WebSavePoint struct {
 }
 
 func (web *WebSavePoint) Execute(cxt *TaskContext) {
-	wf := cxt.Workflow()
+	wf := cxt.Temporary()
 	wf.SetBodyAuto(`{"a": "1","url":["http://httpbin.org/post","http://httpbin.org/get"]}`)
 	resp, err := wf.Execute()
 	if err != nil {

@@ -8,8 +8,8 @@ type IHunt interface {
 
 // TaskContext 上下文
 type TaskContext struct {
-	hunter   *Hunter
-	workflow *requests.Workflow
+	hunter    *Hunter
+	temporary *requests.Temporary
 
 	parent  ITaskNode
 	current ITaskNode
@@ -60,14 +60,14 @@ func (cxt *TaskContext) Session() *requests.Session {
 	return cxt.hunter.Session()
 }
 
-// Workflow Get return Workflow *requests.Workflow. not exists, return nil
-func (cxt *TaskContext) Workflow() *requests.Workflow {
-	return cxt.workflow
+// Temporary Get return Temporary *requests.Temporary. not exists, return nil
+func (cxt *TaskContext) Temporary() *requests.Temporary {
+	return cxt.temporary
 }
 
-// SetWorkflow Set Workflow *requests.Workflow
-func (cxt *TaskContext) SetWorkflow(workflow *requests.Workflow) {
-	cxt.workflow = workflow
+// SetTemporary Set Temporary *requests.Temporary
+func (cxt *TaskContext) SetTemporary(temporary *requests.Temporary) {
+	cxt.temporary = temporary
 }
 
 // TaskID Get Task ID
@@ -90,10 +90,10 @@ func (cxt *TaskContext) SetCancelNext(is bool) {
 	cxt.cancel = is
 }
 
-// Hunt Hunt() = cxt.Workflow().Execute()
+// Hunt Hunt() = cxt.Temporary().Execute()
 func (cxt *TaskContext) Hunt() (requests.IResponse, error) {
 	if ihunt, ok := cxt.current.Task().(IHunt); ok {
 		return ihunt.Hunt()
 	}
-	return cxt.workflow.Execute()
+	return cxt.temporary.Execute()
 }
