@@ -10,5 +10,5 @@ type PreCurlUrl string
 func (h PreCurlUrl) Before(ctx *TaskContext) {
 	gurl := gcurl.ParseRawCURL(string(h))
 	ctx.GetHunter().SetSession(gurl.CreateSession())
-	ctx.SetWorkflow(gurl.CreateWorkflow(ctx.Session()))
+	ctx.SetTemporary(gurl.CreateTemporary(ctx.Session()))
 }
