@@ -21,8 +21,8 @@ func NewExtractor(content []byte) *Extractor {
 	if err != nil {
 		panic(err)
 	}
-	runtime.SetFinalizer(&doc, func(obj interface{}) {
-		(*obj.(*types.Document)).AutoFree()
+	runtime.SetFinalizer(doc, func(obj interface{}) {
+		obj.(types.Document).Free()
 	})
 	return &Extractor{Content: content, doc: doc}
 }
@@ -30,17 +30,14 @@ func NewExtractor(content []byte) *Extractor {
 // XPaths multi xpath extractor
 func (etor *Extractor) XPaths(exp string) (*XPath, error) {
 	result, err := etor.doc.Find(exp)
-	runtime.SetFinalizer(&result, func(obj interface{}) {
-		(*obj.(*types.XPathResult)).Free()
-	})
-	return &XPath{result: []types.XPathResult{result}, errorFlags: ERROR_SKIP}, err
+	return NewXPath([]types.XPathResult{result}), err
 }
 
 // XPathResult libxml2 xpathresult
 func (etor *Extractor) XPathResult(exp string) (result types.XPathResult, err error) {
 	result, err = etor.doc.Find(exp)
-	runtime.SetFinalizer(&result, func(obj interface{}) {
-		(*obj.(*types.XPathResult)).Free()
+	runtime.SetFinalizer(result, func(obj interface{}) {
+		obj.(types.XPathResult).Free()
 	})
 	return
 }
@@ -60,8 +57,8 @@ type XPath struct {
 
 func NewXPath(result []types.XPathResult) *XPath {
 	xp := &XPath{result: result, errorFlags: ERROR_SKIP}
-	runtime.SetFinalizer(&xp.result, func(obj interface{}) {
-		for _, xr := range *obj.(*[]types.XPathResult) {
+	runtime.SetFinalizer(xp, func(obj interface{}) {
+		for _, xr := range obj.(*XPath).result {
 			xr.Free()
 		}
 	})
