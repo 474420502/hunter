@@ -4,9 +4,9 @@ go 1.14
 
 require (
 	github.com/474420502/focus v0.12.0
-	github.com/474420502/gcurl v0.1.0
+	github.com/474420502/gcurl v0.1.2
 	github.com/474420502/requests v1.6.0
-	github.com/Pallinder/go-randomdata v1.1.0
+	github.com/Pallinder/go-randomdata v1.2.0
 	github.com/davecgh/go-spew v1.1.1
 	github.com/lestrrat-go/libxml2 v0.0.0-20200215080510-6483566f52cb
 	github.com/pkg/errors v0.9.1 // indirect
