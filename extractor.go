@@ -170,7 +170,7 @@ func (xp *XPath) ForEachAttr(exp string) (attributes []types.Attribute, errorlis
 
 	runtime.SetFinalizer(&attributes, func(obj interface{}) {
 		for _, attr := range *(obj.(*[]types.Attribute)) {
-			attr.AutoFree()
+			attr.Free()
 		}
 	})
 
