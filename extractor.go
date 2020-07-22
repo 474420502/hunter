@@ -2,6 +2,7 @@ package hunter
 
 import (
 	"log"
+	"runtime"
 
 	"github.com/lestrrat-go/libxml2"
 	"github.com/lestrrat-go/libxml2/clib"
@@ -20,18 +21,27 @@ func NewExtractor(content []byte) *Extractor {
 	if err != nil {
 		panic(err)
 	}
+	runtime.SetFinalizer(&doc, func(obj interface{}) {
+		(*obj.(*types.Document)).AutoFree()
+	})
 	return &Extractor{Content: content, doc: doc}
 }
 
 // XPaths multi xpath extractor
 func (etor *Extractor) XPaths(exp string) (*XPath, error) {
 	result, err := etor.doc.Find(exp)
+	runtime.SetFinalizer(&result, func(obj interface{}) {
+		(*obj.(*types.XPathResult)).Free()
+	})
 	return &XPath{result: []types.XPathResult{result}, errorFlags: ERROR_SKIP}, err
 }
 
 // XPathResult libxml2 xpathresult
 func (etor *Extractor) XPathResult(exp string) (result types.XPathResult, err error) {
 	result, err = etor.doc.Find(exp)
+	runtime.SetFinalizer(&result, func(obj interface{}) {
+		(*obj.(*types.XPathResult)).Free()
+	})
 	return
 }
 
@@ -46,6 +56,16 @@ const (
 type XPath struct {
 	result     []types.XPathResult
 	errorFlags ErrorFlags
+}
+
+func NewXPath(result []types.XPathResult) *XPath {
+	xp := &XPath{result: result, errorFlags: ERROR_SKIP}
+	runtime.SetFinalizer(&xp.result, func(obj interface{}) {
+		for _, xr := range *obj.(*[]types.XPathResult) {
+			xr.Free()
+		}
+	})
+	return xp
 }
 
 // GetXPathResults Get Current XPath Results
@@ -78,7 +98,6 @@ func (xp *XPath) ForEachText(exp string) (texts []string, errorlist []error) {
 	inames, errlist := xp.ForEachEx(exp, func(result types.XPathResult) []interface{} {
 		var ir []interface{}
 		for iter := result.NodeIter(); iter.Next(); {
-
 			ir = append(ir, iter.Node().TextContent())
 		}
 		return ir
@@ -97,7 +116,6 @@ func (xp *XPath) ForEachType(exp string) (typelist []clib.XMLNodeType, errorlist
 	inames, errlist := xp.ForEachEx(exp, func(result types.XPathResult) []interface{} {
 		var ir []interface{}
 		for iter := result.NodeIter(); iter.Next(); {
-
 			ir = append(ir, iter.Node().NodeType())
 		}
 		return ir
@@ -152,6 +170,12 @@ func (xp *XPath) ForEachAttr(exp string) (attributes []types.Attribute, errorlis
 	for _, i := range inames {
 		attributes = append(attributes, i.(types.Attribute))
 	}
+
+	runtime.SetFinalizer(&attributes, func(obj interface{}) {
+		for _, attr := range *(obj.(*[]types.Attribute)) {
+			attr.AutoFree()
+		}
+	})
 
 	return attributes, errlist
 }
@@ -261,7 +285,7 @@ func (xp *XPath) ForEach(exp string) (newxpath *XPath, errorlist []error) {
 		return
 	}
 
-	newxpath = &XPath{errorFlags: xp.errorFlags}
+	var results []types.XPathResult
 
 	for _, xpresult := range xp.result {
 
@@ -276,9 +300,10 @@ func (xp *XPath) ForEach(exp string) (newxpath *XPath, errorlist []error) {
 					break
 				}
 			}
-			newxpath.result = append(newxpath.result, result)
+			results = append(results, result)
 		}
 	}
 
+	newxpath = NewXPath(results)
 	return
 }
